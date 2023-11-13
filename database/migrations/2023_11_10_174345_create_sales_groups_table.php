@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('sales_groups', function (Blueprint $table) {
             $table->id();
+            $table->string('description');
+            $table->string('manager');
             $table->timestamps();
         });
     }
