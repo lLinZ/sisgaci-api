@@ -25,5 +25,5 @@ Route::post('login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('user/data', [AuthController::class, 'get_logged_user_data']);
     Route::put('user/edit/{user}/color', [AuthController::class, 'edit_color']);
-
+    Route::get('logout', [AuthController::class, 'logout']);
 });
