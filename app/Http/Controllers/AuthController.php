@@ -61,6 +61,7 @@ class AuthController extends Controller
             'phone' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'document' => 'required|string|max:20|unique:users',
+            'address' => 'required|string',
             'password' => 'required|string|min:8',
         ]);
 
@@ -76,13 +77,12 @@ class AuthController extends Controller
                 'phone' => $request->phone,
                 'email' => $request->email,
                 'document' => $request->document,
+                'address' => $request->address,
                 'password' => Hash::make($request->password),
                 'color' => '#4caf50',
             ]);
 
             // Obtener departamento o crear status si no existe
-
-            
             $dept = Department::where(['id' => $request->department])->first();
             $user->department()->associate($dept);
             
