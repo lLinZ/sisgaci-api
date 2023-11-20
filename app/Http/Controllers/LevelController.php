@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Call;
+use App\Models\Level;
 use App\Http\Controllers\Controller;
-use App\Models\Client;
 use Illuminate\Http\Request;
 
-class CallController extends Controller
+class LevelController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,20 +19,9 @@ class CallController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create()
     {
         //
-        Client::create([
-            'first_name' => $request->first_name,
-            'middle_name' => $request->middle_name,
-            'lastname' => $request->lastname,
-            'second_lastname' => $request->second_lastname,
-            'nationality' => $request->nationality,
-            'document' => $request->document,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'marital_status' => $request->marital_status,
-        ]);
     }
 
     /**
@@ -47,7 +35,7 @@ class CallController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Call $call)
+    public function show(Level $level)
     {
         //
     }
@@ -55,7 +43,7 @@ class CallController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Call $call)
+    public function edit(Level $level)
     {
         //
     }
@@ -63,7 +51,7 @@ class CallController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Call $call)
+    public function update(Request $request, Level $level)
     {
         //
     }
@@ -71,7 +59,7 @@ class CallController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Call $call)
+    public function destroy(Level $level)
     {
         //
     }
