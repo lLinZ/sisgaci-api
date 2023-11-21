@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CallController;
 use App\Http\Controllers\DepartmentController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,7 +30,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('user/edit/{user}/color', [AuthController::class, 'edit_color']);
 
     /**---------------------- 
-     * DEPARTMENT 
+     * CALLS
+     * ----------------------**/
+    // Crear llamada
+    Route::post('call', [CallController::class, 'create']);
+    // Obtener llamadas
+    Route::get('call', [CallController::class, 'index']);
+
+    /**---------------------- 
+     * DEPARTMENTS
      * ----------------------**/
     // Obtener departamentos
     Route::get('department', [DepartmentController::class, 'get_all_departments']);

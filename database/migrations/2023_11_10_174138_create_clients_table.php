@@ -18,11 +18,14 @@ return new class extends Migration
             $table->string('lastname');
             $table->string('second_lastname')->nullable();
             $table->string('document');
-            $table->string('phone1');
-            $table->string('phone2');
-            $table->string('email');
-            $table->string('short_address')->nullable();
-            $table->string('origin')->nullable();
+            $table->string('phone');
+            $table->string('email')->nullable();
+            $table->string('marital_status');
+            $table->string('nationality');
+            $table->string('gender');
+            $table->string('origin');
+            $table->unsignedBigInteger('status_id')->nullable();
+            $table->foreign('status_id')->references('id')->on('statuses')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('origin');
             $table->string('property');
-            $table->string('call_date');
+            $table->string('zone');
             $table->string('call_purpose');
             $table->string('feedback');
             $table->unsignedBigInteger('sales_agent_id')->nullable();

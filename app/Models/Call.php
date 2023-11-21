@@ -7,5 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Call extends Model
 {
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
     use HasFactory;
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'call_purpose',
+        'zone',
+        'origin',
+        'feedback',
+        'property',
+    ];
 }

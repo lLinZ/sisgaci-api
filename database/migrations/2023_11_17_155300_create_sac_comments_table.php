@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('sac_comments', function (Blueprint $table) {
             $table->id();
             $table->string('description');
-            $table->string('origin');
+            $table->string('author');
             $table->unsignedBigInteger('call_id')->nullable();
             $table->foreign('call_id')->references('id')->on('calls')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('user_id')->nullable();
