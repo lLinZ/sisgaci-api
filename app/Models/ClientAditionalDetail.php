@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class ClientAditionalDetail extends Model
 {
     use HasFactory;
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    protected $fillable = [
+        'type',
+        'data'
+    ];
 }

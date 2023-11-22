@@ -11,6 +11,10 @@ class Call extends Model
     {
         return $this->belongsTo(Client::class);
     }
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
+    }
     use HasFactory;
     /**
      * The attributes that are mass assignable.

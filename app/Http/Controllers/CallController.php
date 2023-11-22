@@ -63,7 +63,6 @@ class CallController extends Controller
             ]);
             // Obtener status activo o crear status si no existe
             $status = Status::firstOrNew(['description' => 'Activo']);
-            $status->save();
             $client->status()->associate($status);
             $client->save();
             try {
@@ -74,15 +73,17 @@ class CallController extends Controller
                     'property' => $request->property,
                     'feedback' => $request->feedback,
                 ]);
+                $status = Status::firstOrNew(['description' => 'Activo']);
+                $call->status()->associate($status);
                 $call->client()->associate($client);
                 $call->save();
                 return response()->json(['status' => true, 'data' => ['call' => $call, 'client' => $client]]);
             } catch (\Throwable $th) {
-                return response()->json(['status' => false, 'errors' => ['No se logro registrar la llamada', $th->getMessage()]]);
+                return response()->json(['status' => false, 'errors' => ['No se logro registrar la llamada', $th->getMessage()]], 400);
             }
         } catch (\Throwable $th) {
             //throw $th;
-            return response()->json(['status' => false, 'errors' => ['No se logro registrar ni el cliente ni la llamada', $th->getMessage()]]);
+            return response()->json(['status' => false, 'errors' => ['No se logro registrar ni el cliente ni la llamada', $th->getMessage()]], 400);
         }
     }
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CallController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DepartmentController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('call', [CallController::class, 'create']);
     // Obtener llamadas
     Route::get('call', [CallController::class, 'index']);
+
+    /**---------------------- 
+     * CLIENTS
+     * ----------------------**/
+    // Crear cliente
+    Route::post('client', [ClientController::class, 'create']);
+    // Obtener clientes
+    Route::get('client', [ClientController::class, 'index']);
+    // Agregar un detalle adicional de cliente
+    Route::post('client/info/add/{client}', [ClientController::class, 'add_aditional_info']);
 
     /**---------------------- 
      * DEPARTMENTS
