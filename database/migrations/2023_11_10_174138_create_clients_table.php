@@ -17,11 +17,11 @@ return new class extends Migration
             $table->string('middle_name')->nullable();
             $table->string('lastname');
             $table->string('second_lastname')->nullable();
-            $table->string('document');
+            $table->string('document')->nullable();
             $table->string('phone');
             $table->string('email')->nullable();
-            $table->string('marital_status');
-            $table->string('nationality');
+            $table->string('marital_status')->nullable();
+            $table->string('nationality')->nullable();
             $table->string('gender');
             $table->string('origin');
             $table->unsignedBigInteger('status_id')->nullable();

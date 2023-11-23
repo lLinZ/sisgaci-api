@@ -37,12 +37,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('call', [CallController::class, 'create']);
     // Obtener llamadas
     Route::get('call', [CallController::class, 'index']);
+    // Obtener llamada por id
+    Route::get('call/{call}', [CallController::class, 'get_call_by_id']);
 
     /**---------------------- 
      * CLIENTS
      * ----------------------**/
     // Crear cliente
     Route::post('client', [ClientController::class, 'create']);
+    // Crear cliente
+    Route::get('client/{client}', [ClientController::class, 'get_client_by_id']);
     // Obtener clientes
     Route::get('client', [ClientController::class, 'index']);
     // Agregar un detalle adicional de cliente

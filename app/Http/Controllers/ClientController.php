@@ -48,6 +48,19 @@ class ClientController extends Controller
         }
     }
     /**
+     * Obtener cliente por su id
+     */
+    public function get_client_by_id(Client $client)
+    {
+        try {
+            $client_data = ClientAditionalDetail::where('client_id', $client->id)->get();
+            $client->client_data = $client_data;
+            return response()->json(['status' => true, 'data' => $client]);
+        } catch (\Throwable $th) {
+            return response()->json(['status' => false, 'errors' => ['No se logro encontrar el cliente', $th->getMessage()]], 400);
+        }
+    }
+    /**
      * Show the form for creating a new resource.
      */
     public function create()

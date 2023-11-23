@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('calls', function (Blueprint $table) {
             $table->id();
             $table->string('origin');
-            $table->string('property');
+            $table->string('property')->nullable();
+            $table->string('property_type')->nullable();
             $table->string('zone');
             $table->string('call_purpose');
             $table->string('feedback');
