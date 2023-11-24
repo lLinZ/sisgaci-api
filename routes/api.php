@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('call', [CallController::class, 'index']);
     // Obtener llamada por id
     Route::get('call/{call}', [CallController::class, 'get_call_by_id']);
+    Route::post('call/comment/{call}', [CallController::class, 'add_comment_to_call']);
 
     /**---------------------- 
      * CLIENTS

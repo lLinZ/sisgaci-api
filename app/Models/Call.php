@@ -27,5 +27,6 @@ class Call extends Model
         'origin',
         'feedback',
         'property',
+        'property_type',
     ];
 }

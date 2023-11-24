@@ -81,14 +81,16 @@ class CallController extends Controller
                 $call->save();
                 try {
                     $user = $request->user();
-                    $user_name = $user->first_name;
-                    $client_name = $client->first_name;
+                    $user_name = "$user->first_name $user->lastname";
+                    $client_name = "$client->first_name $client->lastname";
                     $comment = SacComment::create([
                         'description' => "$user_name registro una llamada y un cliente ($client_name)",
                         'author' => 'SISGACI'
                     ]);
                     $comment->call()->associate($call);
                     $comment->user()->associate($user);
+                    $comment->save();
+
                     return response()->json(['status' => true, 'data' => ['call' => $call, 'client' => $client]]);
                 } catch (\Throwable $th) {
                     //throw $th;
@@ -103,6 +105,23 @@ class CallController extends Controller
         }
     }
 
+
+    /**
+     * Agregar comentario a la llamada por su id
+     */
+    public function add_comment_to_call(Request $request, Call $call)
+    {
+        $user = $request->user();
+        $comment = SacComment::create([
+            'description' => $request->feedback,
+            'author' => "$user->first_name $user->lastname",
+        ]);
+        $comment->call()->associate($call);
+        $comment->user()->associate($user);
+        $comment->save();
+        $all_comments = SacComment::with('user')->where('call_id', $call->id)->get();
+        return response()->json(['status' => true, 'data' => $all_comments]);
+    }
     /**
      * Obtener llamada por su id
      */
@@ -110,7 +129,8 @@ class CallController extends Controller
     {
         try {
             $call_with_details = Call::with('client', 'status')->where('id', $call->id)->get()->first();
-            return response()->json(['status' => true, 'data' => $call_with_details]);
+            $sac_comments = SacComment::with('user')->where('call_id', $call->id)->orderBy('created_at', 'desc')->get();
+            return response()->json(['status' => true, 'data' => ['call' => $call_with_details, 'comments' => $sac_comments]]);
         } catch (\Throwable $th) {
             return response()->json(['status' => false, 'errors' => ['Ocurrio un error al buscar la informacion de la llamada', $th->getMessage()]], 400);
         }
