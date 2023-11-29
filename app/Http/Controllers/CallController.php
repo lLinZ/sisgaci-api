@@ -111,6 +111,15 @@ class CallController extends Controller
      */
     public function add_comment_to_call(Request $request, Call $call)
     {
+        $validator = Validator::make($request->all(), [
+            'feedback' => 'required|string'
+        ], [
+            'feedback.required' => 'El comentario es obligatorio',
+            'feedback.string' => 'Tipo de comentario invalido, informele a sistemas sobre este codigo de error FEEDBACK_STRING'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'errors' => $validator->errors()], 400);
+        }
         $user = $request->user();
         $comment = SacComment::create([
             'description' => $request->feedback,
@@ -119,8 +128,28 @@ class CallController extends Controller
         $comment->call()->associate($call);
         $comment->user()->associate($user);
         $comment->save();
-        $all_comments = SacComment::with('user')->where('call_id', $call->id)->get();
+        $all_comments = SacComment::with('user')->where('call_id', $call->id)->orderBy('created_at', 'desc')->get();
         return response()->json(['status' => true, 'data' => $all_comments]);
+    }
+    public function get_call_by_phone(Request $request, $phone)
+    {
+        $user = $request->user();
+        $client = Client::where('phone', $phone)->get()->first();
+        if (isset($client) > 0) {
+            $call = Call::where('client_id', $client->id)->get()->first();
+            $call->client = $client;
+
+            $comment = SacComment::create([
+                'description' => "El usuario $user->first_name $user->lastname busco el siguiente numero: $phone",
+                'author' => 'SISGACI',
+            ]);
+            $comment->call()->associate($call);
+            $comment->user()->associate($user);
+            $comment->save();
+            return response()->json(['status' => true, 'data' => $call]);
+        } else {
+            return response()->json(['status' => false, 'errors' => ['No se encontro el numero de telefono']], 404);
+        }
     }
     /**
      * Obtener llamada por su id
