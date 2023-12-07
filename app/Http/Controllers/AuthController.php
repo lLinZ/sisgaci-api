@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
+use App\Models\GeneralActionRecord;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Status;
@@ -85,7 +86,7 @@ class AuthController extends Controller
             // Obtener departamento o crear status si no existe
             $dept = Department::where(['id' => $request->department])->first();
             $user->department()->associate($dept);
-            
+
             // Obtener status activo o crear status si no existe
             $status = Status::firstOrNew(['description' => 'Activo']);
             $status->save();
@@ -105,9 +106,9 @@ class AuthController extends Controller
             $token = $user->createToken('auth_token')->plainTextToken;
 
             return response()->json(['data' => $user, 'token' => $token, 'token_type' => 'Bearer', 'status' => true], 200);
-            } catch (\Throwable $th) {
-        return response()->json(['status' => false, 'errors' => [$th->getMessage()]], 400);
-    }
+        } catch (\Throwable $th) {
+            return response()->json(['status' => false, 'errors' => [$th->getMessage()]], 400);
+        }
     }
 
     /**
@@ -153,7 +154,7 @@ class AuthController extends Controller
         // Obtener rol cliente o crear rol si no existe
         $role = Role::firstOrNew(['description' => 'Master']);
         $role->save();
-        
+
         // Se asocia el rol al usuario
         $user->role()->associate($role);
 
@@ -174,11 +175,16 @@ class AuthController extends Controller
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json(['status' => false, 'message' => 'Unauthorized'], 401);
         }
-        $user = User::where('email', $request['email'])->firstOrFail();
+        $user = User::with('role, status')->where('email', $request['email'])->firstOrFail();
         $token = $user->createToken('auth_token')->plainTextToken;
         $user->token = $token;
-        $user->role = Role::find(['id' => $user->role_id])[0];
-        $user->status = Status::find(['id' => $user->status_id])[0];
+        $G_A_R = GeneralActionRecord::create([
+            'description' => "El usuario $user->first_name $user->lastname Cedula $user->document inició sesión. ($user->email)",
+            'importance' => 'Normal',
+            'author' => 'SISGACI',
+        ]);
+        $G_A_R->user()->associate($user);
+        $G_A_R->save();
         return response()->json([
             'status' => true,
             'message' => 'Bienvenido ' . $user->first_name,

@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PropertyTransactionType extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'description'
+    ];
 }
