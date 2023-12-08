@@ -175,11 +175,11 @@ class AuthController extends Controller
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json(['status' => false, 'message' => 'Unauthorized'], 401);
         }
-        $user = User::with('role, status')->where('email', $request['email'])->firstOrFail();
+        $user = User::with('role', 'status')->where('email', $request['email'])->firstOrFail();
         $token = $user->createToken('auth_token')->plainTextToken;
         $user->token = $token;
         $G_A_R = GeneralActionRecord::create([
-            'description' => "El usuario $user->first_name $user->lastname Cedula $user->document inició sesión. ($user->email)",
+            'description' => "El usuario $user->first_name $user->lastname ($user->document) inició sesión. ($user->email)",
             'importance' => 'Normal',
             'author' => 'SISGACI',
         ]);
@@ -198,6 +198,14 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        $user = $request->user();
+        $G_A_R = GeneralActionRecord::create([
+            'description' => "El usuario $user->first_name $user->lastname ($user->document) cerró sesión. ($user->email)",
+            'importance' => 'Leve',
+            'author' => 'SISGACI',
+        ]);
+        $G_A_R->user()->associate($user);
+        $G_A_R->save();
         $request->user()->currentAccessToken()->delete();
         return [
             'status' => true,
@@ -221,12 +229,21 @@ class AuthController extends Controller
         if (!$validator->fails()) {
             return response()->json(['status' => false, 'errors' => [$validator->errors()]], 400);
         }
-
+        $prev_email = $user->email;
+        $prev_phone = $user->phone;
+        $new_password = $request->password;
         $user->email = $request->email;
         $user->phone = $request->phone;
         $user->password = Hash::make($request->password);
         $user->save();
 
+        $G_A_R = GeneralActionRecord::create([
+            'description' => "El usuario $user->first_name $user->lastname ($user->document) edito sus datos, Email: $prev_email, Tlf: $prev_phone, Pass: $new_password. ($user->email)",
+            'importance' => 'Alta',
+            'author' => 'SISGACI',
+        ]);
+        $G_A_R->user()->associate($user);
+        $G_A_R->save();
         return response()->json(['status' => true, 'message' => 'Se ha editado el usuario', 'user' => $user], 200);
     }
 

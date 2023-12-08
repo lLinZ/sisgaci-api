@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\PropertyTransactionType;
 use App\Http\Controllers\Controller;
+use App\Models\GeneralActionRecord;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PropertyTransactionTypeController extends Controller
 {
@@ -14,14 +16,46 @@ class PropertyTransactionTypeController extends Controller
     public function index()
     {
         //
+        try {
+            $property_transaction_types = PropertyTransactionType::all();
+            return response()->json(['status' => true, 'data' => $property_transaction_types]);
+        } catch (\Throwable $th) {
+            return response()->json(['status' => false, 'errors' => [$th->getMessage()]], 400);
+        }
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
         //
+        //
+        $user = $request->user();
+        $validator = Validator::make($request->all(), [
+            'description' => 'required|string|unique:property_transaction_types',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'errors' => $validator->errors()], 400);
+        }
+        try {
+            $property_transaction_type = PropertyTransactionType::create([
+                'description' => $request->description,
+            ]);
+
+            $G_A_C = GeneralActionRecord::create([
+                'description' => "El usuario $user->first_name $user->lastname acaba de registrar un nuevo tipo de transaccion de propiedad: $request->description",
+                'author' => "SISGACI",
+                'importance' => 'Alta',
+            ]);
+
+            $G_A_C->user()->associate($user);
+
+            return response()->json(['status' => true, 'data' => $property_transaction_type]);
+        } catch (\Throwable $th) {
+            return response()->json(['status' => false, 'errors' => ['No se logro registrar el tipo de transaccion de propiedad', $th->getMessage()]], 500);
+        }
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PropertyType;
 use App\Http\Controllers\Controller;
+use App\Models\GeneralActionRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -15,6 +16,12 @@ class PropertyTypeController extends Controller
     public function index()
     {
         //
+        try {
+            $property_types = PropertyType::all();
+            return response()->json(['status' => true, 'data' => $property_types]);
+        } catch (\Throwable $th) {
+            return response()->json(['status' => false, 'errors' => [$th->getMessage()]], 400);
+        }
     }
 
     /**
@@ -23,8 +30,9 @@ class PropertyTypeController extends Controller
     public function create(Request $request)
     {
         //
+        $user = $request->user();
         $validator = Validator::make($request->all(), [
-            'description' => 'required|string',
+            'description' => 'required|string|unique:property_types',
         ]);
 
         if ($validator->fails()) {
@@ -34,6 +42,14 @@ class PropertyTypeController extends Controller
             $property_type = PropertyType::create([
                 'description' => $request->description,
             ]);
+
+            $G_A_C = GeneralActionRecord::create([
+                'description' => "El usuario $user->first_name $user->lastname acaba de registrar un nuevo tipo de inmueble: $request->description",
+                'author' => "SISGACI",
+                'importance' => 'Alta',
+            ]);
+
+            $G_A_C->user()->associate($user);
 
             return response()->json(['status' => true, 'data' => $property_type]);
         } catch (\Throwable $th) {

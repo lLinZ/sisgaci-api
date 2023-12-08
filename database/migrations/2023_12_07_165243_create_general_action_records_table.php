@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('general_action_records', function (Blueprint $table) {
             $table->id();
+            $table->string('description');
+            $table->string('importance');
+            $table->string('author');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

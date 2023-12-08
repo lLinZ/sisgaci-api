@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CallController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DepartmentController;
+use App\Models\PropertyType;
 use Illuminate\Support\Facades\Route;
 
 /**---------------------
@@ -61,6 +62,23 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('department', [DepartmentController::class, 'get_all_departments']);
     // Crear departamento    
     Route::post('department', [DepartmentController::class, 'create']);
+
+    /**---------------------- 
+     * PROPERTY TYPES
+     * ----------------------**/
+    // Obtener tipos de propiedad
+    Route::get('property_type', [PropertyType::class, 'index']);
+    // Crear tipo de propiedad
+    Route::post('property_type/add', [PropertyType::class, 'create']);
+
+    /**---------------------- 
+     * PROPERTY TRANSACTION TYPES
+     * ----------------------**/
+    // Obtener tipos de transaccion de propiedad
+    Route::get('property_transaction_type', [PropertyTransactionType::class, 'index']);
+    // Crear tipo de transaccion de propiedad
+    Route::post('property_transaction_type/add', [PropertyTransactionType::class, 'create']);
+
 
     /**---------------------
      * SESSION
