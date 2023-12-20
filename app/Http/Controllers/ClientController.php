@@ -18,7 +18,7 @@ class ClientController extends Controller
         //
         $clients = Client::with('status')->whereHas('status', function ($query) {
             $query->where(['description' => 'Activo']);
-        })->get();
+        })->paginate();
         return response()->json(['status' => true, 'data' => $clients]);
     }
 

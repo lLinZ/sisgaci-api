@@ -13,13 +13,17 @@ return new class extends Migration
     {
         Schema::create('acquisitions', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('price');
+            $table->string('code')->nullable();;
+            $table->string('name')->nullable();
+            $table->string('price')->nullable();
             $table->string('short_address')->nullable();
+            $table->string('main_pic')->nullable();
             $table->unsignedBigInteger('property_type')->nullable();
             $table->foreign('property_type')->references('id')->on('property_types')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('property_transaction_type')->nullable();
             $table->foreign('property_transaction_type')->references('id')->on('property_transaction_types')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('status_id')->nullable();
             $table->foreign('status_id')->references('id')->on('statuses')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();

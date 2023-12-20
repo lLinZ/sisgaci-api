@@ -1,10 +1,15 @@
 <?php
 
+use App\Http\Controllers\AcquisitionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CallController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\CodeController;
 use App\Http\Controllers\DepartmentController;
-use App\Models\PropertyType;
+use App\Http\Controllers\PropertyTransactionTypeController;
+use App\Http\Controllers\PropertyTypeController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StatusController;
 use Illuminate\Support\Facades\Route;
 
 /**---------------------
@@ -56,6 +61,30 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('client/info/add/{client}', [ClientController::class, 'add_aditional_info']);
 
     /**---------------------- 
+     * ACQUISITIONS
+     * ----------------------**/
+    // Crear captacion
+    Route::post('code/add', [CodeController::class, 'create']);
+
+    /**---------------------- 
+     * ACQUISITIONS
+     * ----------------------**/
+    // Crear captacion
+    Route::post('acquisition', [AcquisitionController::class, 'create']);
+
+    /**---------------------- 
+     * ROLES
+     * ----------------------**/
+    // Crear rol
+    Route::post('role/add', [RoleController::class, 'create']);
+
+    /**---------------------- 
+     * STATUS
+     * ----------------------**/
+    // Crear status
+    Route::post('status/add', [StatusController::class, 'create']);
+
+    /**---------------------- 
      * DEPARTMENTS
      * ----------------------**/
     // Obtener departamentos
@@ -67,17 +96,17 @@ Route::middleware('auth:sanctum')->group(function () {
      * PROPERTY TYPES
      * ----------------------**/
     // Obtener tipos de propiedad
-    Route::get('property_type', [PropertyType::class, 'index']);
+    Route::get('property_type', [PropertyTypeController::class, 'index']);
     // Crear tipo de propiedad
-    Route::post('property_type/add', [PropertyType::class, 'create']);
+    Route::post('property_type/add', [PropertyTypeController::class, 'create']);
 
     /**---------------------- 
      * PROPERTY TRANSACTION TYPES
      * ----------------------**/
     // Obtener tipos de transaccion de propiedad
-    Route::get('property_transaction_type', [PropertyTransactionType::class, 'index']);
+    Route::get('property_transaction_type', [PropertyTransactionTypeController::class, 'index']);
     // Crear tipo de transaccion de propiedad
-    Route::post('property_transaction_type/add', [PropertyTransactionType::class, 'create']);
+    Route::post('property_transaction_type/add', [PropertyTransactionTypeController::class, 'create']);
 
 
     /**---------------------

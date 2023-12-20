@@ -40,8 +40,10 @@ class User extends Authenticatable
         'department',
         'color',
         'phone',
+        'photo',
         'address',
         'password',
+        'level',
     ];
 
     /**

@@ -13,19 +13,20 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name');
+            $table->string('first_name')->nullable();
             $table->string('middle_name')->nullable();
-            $table->string('lastname');
+            $table->string('lastname')->nullable();
             $table->string('second_lastname')->nullable();
             $table->string('document')->nullable();
-            $table->string('phone');
+            $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->string('marital_status')->nullable();
             $table->string('nationality')->nullable();
-            $table->string('gender');
-            $table->string('origin');
+            $table->string('gender')->nullable();
+            $table->string('origin')->nullable();
             $table->unsignedBigInteger('status_id')->nullable();
             $table->foreign('status_id')->references('id')->on('statuses')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('full_name')->nullable();
             $table->timestamps();
         });
     }

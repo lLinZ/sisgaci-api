@@ -126,6 +126,7 @@ class AuthController extends Controller
             'document' => 'required|string|max:20|unique:users',
             'address' => 'required|string',
             'password' => 'required|string|min:8',
+            'level' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -142,6 +143,7 @@ class AuthController extends Controller
             'document' => $request->document,
             'address' => $request->address,
             'password' => Hash::make($request->password),
+            'level' => $request->level,
             'color' => '#4caf50',
         ]);
         // Obtener status activo o crear status si no existe

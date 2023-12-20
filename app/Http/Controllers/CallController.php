@@ -18,7 +18,7 @@ class CallController extends Controller
     public function index()
     {
         //
-        $calls = Call::with('client')->get();
+        $calls = Call::with('client')->paginate(20);
         return response()->json(['status' => true, 'data' => $calls]);
     }
 
