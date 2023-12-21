@@ -18,10 +18,10 @@ return new class extends Migration
             $table->string('price')->nullable();
             $table->string('short_address')->nullable();
             $table->string('main_pic')->nullable();
-            $table->unsignedBigInteger('property_type')->nullable();
-            $table->foreign('property_type')->references('id')->on('property_types')->onUpdate('cascade')->onDelete('cascade');
-            $table->unsignedBigInteger('property_transaction_type')->nullable();
-            $table->foreign('property_transaction_type')->references('id')->on('property_transaction_types')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedBigInteger('property_type_id')->nullable();
+            $table->foreign('property_type_id')->references('id')->on('property_types')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedBigInteger('property_transaction_type_id')->nullable();
+            $table->foreign('property_transaction_type_id')->references('id')->on('property_transaction_types')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('status_id')->nullable();

@@ -19,6 +19,10 @@ class Acquisition extends Model
         return $this->belongsTo(PropertyTransactionType::class);
     }
 
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
+    }
     protected $fillable = [
         'name',
         'price',

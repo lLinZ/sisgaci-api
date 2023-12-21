@@ -46,7 +46,6 @@ class AcquisitionController extends Controller
         if ($validator->fails()) {
             return response()->json(['status' => false, 'errors' => $validator->errors()], 400);
         }
-
         try {
             // Se obtiene el tipo de transacion de propiedad
             $property_transaction_type = PropertyTransactionType::where('id', $request->property_transaction_type)->first();
@@ -57,10 +56,10 @@ class AcquisitionController extends Controller
 
             // Segun el tipo de inmueble se obtiene la letra correspondiente para luego obtener el numero correlativo
             switch ($property_type->description) {
-                case 'Quinta':
+                case 'Quinta' || 'Townhouse':
                     $letter = 'Q';
                     break;
-                case 'Apartamento' | 'Townhouse' | 'Aparto Quinta':
+                case 'Apartamento'  || 'Aparto Quinta':
                     $letter = 'A';
                     break;
                 case 'Local':
@@ -92,7 +91,7 @@ class AcquisitionController extends Controller
                 'code' => $code_assign
             ]);
             // Se obtiene el status activo y si no existe, se crea y se asocia a la captacion
-            $status = Status::firstOrCreate('description', 'Activo');
+            $status = Status::firstOrCreate(['description' => 'Activo']);
             $acquisition->status()->associate($status);
             $acquisition->property_transaction_type()->associate($property_transaction_type);
             $acquisition->property_type()->associate($property_type);
@@ -126,19 +125,7 @@ class AcquisitionController extends Controller
 
             return response()->json(['status' => true, 'message' => 'Se ha registrado al captacion exitosamente']);
         } catch (\Throwable $th) {
-            //throw $th;
-            // if()
-            // $path = public_path("assets/images/acquisitions/"($code_assign));
-
-            // if (is_file("$path/$image_name")) unlink("$path/$image_name");
-            $output = new \Symfony\Component\Console\Output\ConsoleOutput(2);
-
-            $output->writeln('hello');
             return response()->json(['status' => false, 'errors' => ['No se logro crear la Captacion', $th->getMessage()]], 400);
-        } finally {
-            $output = new \Symfony\Component\Console\Output\ConsoleOutput(2);
-
-            $output->writeln('hello');
         }
     }
 
