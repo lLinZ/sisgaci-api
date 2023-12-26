@@ -131,22 +131,31 @@ class CallController extends Controller
         $all_comments = SacComment::with('user')->where('call_id', $call->id)->orderBy('created_at', 'desc')->get();
         return response()->json(['status' => true, 'data' => $all_comments]);
     }
-    public function get_call_by_phone(Request $request, $phone)
+    public function get_call_by_phone(Request $request, $phone, $phone_alone)
     {
         $user = $request->user();
-        $client = Client::where('phone', $phone)->get()->first();
-        if (isset($client) > 0) {
-            $call = Call::where('client_id', $client->id)->get()->first();
-            $call->client = $client;
-
-            $comment = SacComment::create([
-                'description' => "El usuario $user->first_name $user->lastname busco el siguiente numero: $phone",
-                'author' => 'SISGACI',
-            ]);
-            $comment->call()->associate($call);
-            $comment->user()->associate($user);
-            $comment->save();
-            return response()->json(['status' => true, 'data' => $call]);
+        $clients = Client::where('phone', $phone)->orWhere('phone', 'like', "%$phone_alone%")->get();
+        // return response()->json(['status' => true, 'data' => $client]);
+        if (isset($clients) > 0) {
+            $data = [];
+            $errors = [];
+            foreach ($clients as $client) {
+                try {
+                    $call = Call::where('client_id', $client->id)->get()->first();
+                    $call->client = $client;
+                    $comment = SacComment::create([
+                        'description' => "El usuario $user->first_name $user->lastname busco el siguiente numero: $phone",
+                        'author' => 'SISGACI',
+                    ]);
+                    $comment->call()->associate($call);
+                    $comment->user()->associate($user);
+                    $comment->save();
+                    $data[] = $call;
+                } catch (\Throwable $th) {
+                    $errors = ["Ocurrio un error al buscar la llamada del cliente con id $client->id", $th->getMessage(), $client];
+                }
+            }
+            return response()->json(['status' => true, 'data' => $data, 'errors' => $errors]);
         } else {
             return response()->json(['status' => false, 'errors' => ['No se encontro el numero de telefono']], 404);
         }
