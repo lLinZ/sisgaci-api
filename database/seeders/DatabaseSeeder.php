@@ -18,12 +18,16 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        $this->call(CustomizedClientsTableSeeder::class);
-        $this->call(CustomizedCallsTableSeeder::class);
+        $this->call(CustomizedPropertyTypesTableSeeder::class);
+        $this->call(CustomizedPropertyTransactionTypesTableSeeder::class);
         $this->call(CustomizedUsersTableSeeder::class);
         $this->call(CustomizedStatusesTableSeeder::class);
         $this->call(CustomizedRolesTableSeeder::class);
         $this->call(CustomizedCodesTableSeeder::class);
         $this->call(CustomizedDepartmentsTableSeeder::class);
+        // $this->call(CustomizedCallsTableSeeder::class);
+        // $this->call(CustomizedClientsTableSeeder::class);
+        $this->call(CustomizedNewClientsTableSeeder::class);
+        $this->call(CustomizedNewCallsTableSeeder::class);
     }
 }
