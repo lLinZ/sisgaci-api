@@ -9,6 +9,10 @@ class Acquisition extends Model
 {
     use HasFactory;
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     public function property_type()
     {
         return $this->belongsTo(PropertyType::class);
@@ -27,5 +31,7 @@ class Acquisition extends Model
         'name',
         'price',
         'short_address',
+        'code',
+        'main_pic'
     ];
 }

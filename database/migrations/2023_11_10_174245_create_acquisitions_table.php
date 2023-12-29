@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('price')->nullable();
             $table->string('short_address')->nullable();
+            $table->string('web_description')->nullable();
             $table->string('main_pic')->nullable();
             $table->unsignedBigInteger('property_type_id')->nullable();
             $table->foreign('property_type_id')->references('id')->on('property_types')->onUpdate('cascade')->onDelete('cascade');

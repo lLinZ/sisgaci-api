@@ -28,25 +28,8 @@ class AuthController extends Controller
     }
     public function get_logged_user_data(Request $request)
     {
-
-        $user_data = [];
         $data = $request->user();
-        $user_data = [
-            'first_name' => $data->first_name,
-            'middle_name' => $data->middle_name,
-            'lastname' => $data->lastname,
-            'second_lastname' => $data->second_lastname,
-            'phone' => $data->phone,
-            'status_id' => $data->status_id,
-            'color' => $data->color,
-            'email' => $data->email,
-        ];
-        $user = new User($user_data);
-        $user->id = $data->id;
-        $user->role_id = $data->role_id;
-        $user->status_id = $data->status_id;
-        $user->role = Role::find(['id' => $user->role_id])[0];
-        $user->status = Status::find(['id' => $user->status_id])[0];
+        $user = User::with('status', 'role')->where('id', $data->id)->first();
         return response()->json(['user' => $user]);
     }
     /**
@@ -64,6 +47,7 @@ class AuthController extends Controller
             'document' => 'required|string|max:20|unique:users',
             'address' => 'required|string',
             'password' => 'required|string|min:8',
+            'level' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -80,6 +64,7 @@ class AuthController extends Controller
                 'document' => $request->document,
                 'address' => $request->address,
                 'password' => Hash::make($request->password),
+                'level' => $request->level,
                 'color' => '#4caf50',
             ]);
 

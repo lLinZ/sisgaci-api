@@ -10,6 +10,7 @@ use App\Models\PropertyTransactionType;
 use App\Models\PropertyType;
 use App\Models\Status;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class AcquisitionController extends Controller
@@ -20,6 +21,19 @@ class AcquisitionController extends Controller
     public function index()
     {
         //
+    }
+    public function my_acquisitions(Request $request)
+    {
+        //
+        $user = $request->user();
+
+        try {
+            $acquisitions = Acquisition::with('status', 'property_type', 'property_transaction_type', 'user')->where('user_id', $user->id)->paginate();
+            return response()->json(['status' => true, 'data' => $acquisitions]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(['status' => false, 'errors' => ['No se logro conectar a la BD', $th->getMessage()]], 500);
+        }
     }
 
     /**
@@ -47,8 +61,10 @@ class AcquisitionController extends Controller
             return response()->json(['status' => false, 'errors' => $validator->errors()], 400);
         }
         try {
+
             // Se obtiene el tipo de transacion de propiedad
             $property_transaction_type = PropertyTransactionType::where('id', $request->property_transaction_type)->first();
+
             // Se obtiene el tipo de propiedad
             $property_type = PropertyType::where('id', $request->property_type)->first();
 
@@ -79,9 +95,12 @@ class AcquisitionController extends Controller
                     break;
             }
 
+            // Empieza la transaccion SQL
+            DB::beginTransaction();
+
             // Se obtiene el correlativo segun el tipo de inmueble
             $code = Code::where('letter', $letter)->first();
-            $code_assign = "$code->letter" . "$code->number";
+            $code_assign = "$code->letter" . $code->number == 0 ? 1 : $code->number;
             // Se crea la captacion
             $acquisition = Acquisition::create([
                 'name' => $request->name,
@@ -93,14 +112,13 @@ class AcquisitionController extends Controller
             // Se obtiene el status activo y si no existe, se crea y se asocia a la captacion
             $status = Status::firstOrCreate(['description' => 'Activo']);
             $acquisition->status()->associate($status);
+            $acquisition->user()->associate($user);
             $acquisition->property_transaction_type()->associate($property_transaction_type);
             $acquisition->property_type()->associate($property_type);
 
-            // Se guardan los cambios
-            $acquisition->save();
 
             // Se aumenta 1 unidad en el correlativo correspondiente
-            $code->number = $code->number + 1;
+            $code->number = $code->number == 0 ? 2 : $code->number + 1;
             $code->save();
 
             if (is_dir(public_path("assets/images/acquisitions/$code_assign"))) {
@@ -115,6 +133,15 @@ class AcquisitionController extends Controller
                 $path = public_path("assets/images/acquisitions/$code_assign");
                 $image->move($path, $image_name);
             }
+
+            $acquisition->main_pic = $image_name;
+            $acquisition->save();
+
+            // Al ocurrir un error con la Captacion, se hace rollback
+            if (!$acquisition || !$property_transaction_type || !$property_type || !$code || !$status) {
+                DB::rollBack();
+                throw new \Exception('No se logro crear la Captacion');
+            }
             // Crear registro en el historial de acciones generales
             $G_A_C = GeneralActionRecord::create([
                 'description' => "El usuario $user->first_name $user->lastname acaba de registrar un nuevo tipo de inmueble: $request->name, con codigo: $code_assign",
@@ -123,7 +150,9 @@ class AcquisitionController extends Controller
             ]);
             $G_A_C->user()->associate($user);
 
-            return response()->json(['status' => true, 'message' => 'Se ha registrado al captacion exitosamente']);
+            // Se hace commit de los datos a la BD
+            DB::commit();
+            return response()->json(['status' => true, 'message' => "Se ha registrado al captacion exitosamente ($code_assign)"]);
         } catch (\Throwable $th) {
             return response()->json(['status' => false, 'errors' => ['No se logro crear la Captacion', $th->getMessage()]], 400);
         }

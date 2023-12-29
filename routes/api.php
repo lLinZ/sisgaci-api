@@ -71,6 +71,7 @@ Route::middleware('auth:sanctum')->group(function () {
      * ----------------------**/
     // Crear captacion
     Route::post('acquisition', [AcquisitionController::class, 'create']);
+    Route::get('acquisition', [AcquisitionController::class, 'my_acquisitions']);
 
     /**---------------------- 
      * ROLES
