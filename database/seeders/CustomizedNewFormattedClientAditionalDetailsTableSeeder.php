@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class CustomizedNewFormattedClientAditionalDetailsTableSeeder extends Seeder
 {
@@ -14,11 +16,9 @@ class CustomizedNewFormattedClientAditionalDetailsTableSeeder extends Seeder
      */
     public function run()
     {
-        
-
-        \DB::table('client_aditional_details')->delete();
-        
-        \DB::table('client_aditional_details')->insert(array (
+        DB::table('client_aditional_details')->delete();
+        Schema::disableForeignKeyConstraints();
+        DB::table('client_aditional_details')->insert(array (
             0 => 
             array (
                 'id' => 1,
@@ -71528,7 +71528,6 @@ class CustomizedNewFormattedClientAditionalDetailsTableSeeder extends Seeder
                 'updated_at' => '2023-12-29 15:40:06',
             ),
         ));
-        
-        
+        Schema::enableForeignKeyConstraints();
     }
 }

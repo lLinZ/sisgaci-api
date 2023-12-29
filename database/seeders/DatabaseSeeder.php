@@ -25,9 +25,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CustomizedRolesTableSeeder::class);
         $this->call(CustomizedCodesTableSeeder::class);
         $this->call(CustomizedDepartmentsTableSeeder::class);
-        // $this->call(CustomizedCallsTableSeeder::class);
-        // $this->call(CustomizedClientsTableSeeder::class);
-        $this->call(CustomizedNewClientsTableSeeder::class);
         $this->call(CustomizedNewCallsTableSeeder::class);
         $this->call(CustomizedNewFormattedClientsTableSeeder::class);
         $this->call(CustomizedNewFormattedClientAditionalDetailsTableSeeder::class);
