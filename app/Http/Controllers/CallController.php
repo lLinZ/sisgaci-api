@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Models\SacComment;
 use App\Models\Status;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class CallController extends Controller
@@ -204,12 +205,41 @@ class CallController extends Controller
     {
         //
     }
-
+    // 
+    // 
+    // 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Call $call)
+    public function destroy(Request $request, Call $call)
     {
+        // $user  = $request->user();
+        // if (intval($user->level) < 10) {
+        //     return response()->json(['status' => false, 'message' => 'No tienes el nivel de acceso permitido para esta accion'], 401);
+        // }
+        $call_with_client = Call::with('client', 'status')->where('id', $call->id)->first();
+        $client_id = $call_with_client->client->id;
+        $call_id = $call->id;
         //
+        try {
+            DB::beginTransaction();
+            $call_result = Call::destroy($call_id);
+            if ($call_result) {
+                $client_result = Client::destroy($client_id);
+                if ($client_result) {
+                    DB::commit();
+                    return response()->json(['status' => true, 'message' => 'Se ha eliminado el cliente y la llamada']);
+                } else {
+                    DB::rollBack();
+                    throw new \Exception('No se elimino la llamada ni el cliente' . $call_result . ' ' . $client_result);
+                }
+            } else {
+                DB::rollBack();
+                throw new \Exception('No se elimino la llamada');
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(['status' => false, 'errors' => [$th->getMessage()]], 500);
+        }
     }
 }

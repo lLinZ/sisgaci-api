@@ -29,5 +29,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(CustomizedClientsTableSeeder::class);
         $this->call(CustomizedNewClientsTableSeeder::class);
         $this->call(CustomizedNewCallsTableSeeder::class);
+        $this->call(CustomizedNewFormattedClientsTableSeeder::class);
+        $this->call(CustomizedNewFormattedClientAditionalDetailsTableSeeder::class);
     }
 }

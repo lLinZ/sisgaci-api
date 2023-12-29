@@ -47,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('call/phone/{phone}/{phone_alone}', [CallController::class, 'get_call_by_phone']);
     Route::get('call/{call}', [CallController::class, 'get_call_by_id']);
     Route::post('call/comment/{call}', [CallController::class, 'add_comment_to_call']);
+    Route::delete('call/{call}', [CallController::class, 'destroy']);
 
     /**---------------------- 
      * CLIENTS
