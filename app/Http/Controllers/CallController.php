@@ -156,6 +156,9 @@ class CallController extends Controller
                     $errors = ["Ocurrio un error al buscar la llamada del cliente con id $client->id", $th->getMessage(), $client];
                 }
             }
+            if (sizeof($data) == 0) {
+                return response()->json(['status' => false, 'errors' => ['No se encontro el numero de telefono']], 404);
+            }
             return response()->json(['status' => true, 'data' => $data, 'errors' => $errors]);
         } else {
             return response()->json(['status' => false, 'errors' => ['No se encontro el numero de telefono']], 404);
