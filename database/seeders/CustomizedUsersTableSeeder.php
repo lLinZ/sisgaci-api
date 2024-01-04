@@ -114,6 +114,6 @@ class CustomizedUsersTableSeeder extends Seeder
                 'updated_at' => '2024-01-03 10:34:13',
             ),
         ));
-        Schema::enaableForeignKeyConstraints();
+        Schema::enableForeignKeyConstraints();
     }
 }
