@@ -26,6 +26,12 @@ Route::post('login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
 
     /**---------------------
+     * ACQUISITION
+     * ---------------------**/
+    // Obtener captacion por id
+    Route::get('/acquisition/{acquisition}', [AcquisitionController::class, 'get_acquisition_by_id']);
+
+    /**---------------------
      * USERS
      * ---------------------**/
     // Validacion de token

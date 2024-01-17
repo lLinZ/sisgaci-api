@@ -31,6 +31,7 @@ class Acquisition extends Model
         'name',
         'price',
         'short_address',
+        'web_description',
         'code',
         'main_pic'
     ];

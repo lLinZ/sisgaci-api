@@ -72,10 +72,10 @@ class AcquisitionController extends Controller
 
             // Segun el tipo de inmueble se obtiene la letra correspondiente para luego obtener el numero correlativo
             switch ($property_type->description) {
-                case 'Quinta' || 'Townhouse':
+                case 'Quinta':
                     $letter = 'Q';
                     break;
-                case 'Apartamento'  || 'Aparto Quinta':
+                case 'Apartamento':
                     $letter = 'A';
                     break;
                 case 'Local':
@@ -100,7 +100,7 @@ class AcquisitionController extends Controller
 
             // Se obtiene el correlativo segun el tipo de inmueble
             $code = Code::where('letter', $letter)->first();
-            $code_assign = "$code->letter" . $code->number == 0 ? 1 : $code->number;
+            $code_assign = $code->number == 0 ? "$code->letter" . "1" : "$code->letter$code->number";
             // Se crea la captacion
             $acquisition = Acquisition::create([
                 'name' => $request->name,
@@ -155,6 +155,16 @@ class AcquisitionController extends Controller
             return response()->json(['status' => true, 'message' => "Se ha registrado al captacion exitosamente ($code_assign)"]);
         } catch (\Throwable $th) {
             return response()->json(['status' => false, 'errors' => ['No se logro crear la Captacion', $th->getMessage()]], 400);
+        }
+    }
+
+    public function get_acquisition_by_id(Request $request, Acquisition $acquisition)
+    {
+        //
+        if (isset($acquisition)) {
+            return response()->json(['status' => true, 'data' => $acquisition, 'message' => 'Ok']);
+        } else {
+            return response()->json(['status' => false, 'message' => 'No se encontro'], 404);
         }
     }
 
