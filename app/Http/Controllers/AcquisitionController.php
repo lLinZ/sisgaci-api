@@ -162,7 +162,8 @@ class AcquisitionController extends Controller
     {
         //
         if (isset($acquisition)) {
-            return response()->json(['status' => true, 'data' => $acquisition, 'message' => 'Ok']);
+            $full_acquisition = Acquisition::with('property_type', 'property_transaction_type', 'status')->where('id', $acquisition->id)->first();
+            return response()->json(['status' => true, 'data' => $full_acquisition, 'message' => 'Ok']);
         } else {
             return response()->json(['status' => false, 'message' => 'No se encontro'], 404);
         }
