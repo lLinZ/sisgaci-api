@@ -23,6 +23,7 @@ class AcquisitionInformation extends Model
         'office_number', // Numero de oficina
         'mall', // Centro comercial
         'land', // Terreno
+        'shed', // Galpon
         'lot', // Parcela
         'urbanization', // Urbanizacion
         'zone', // Zona

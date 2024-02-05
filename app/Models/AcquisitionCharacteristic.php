@@ -26,6 +26,7 @@ class AcquisitionCharacteristic extends Model
         'slope_meters', // Metraje de declive
         'flat_meters', // Metraje de plana
         'bedrooms', // Habitaciones
+        'ground_floor', // Planta Baja
         'service_room', // Habitacion de servicio
         'bathrooms', // Baños
         'floor_quantity', // Cantidad de pisos
